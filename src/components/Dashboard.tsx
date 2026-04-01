@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fraseSchema, type FraseFormData, type Frase } from "../../schemas/fraseSchema";
+import { fraseSchema, type FraseFormData, type Frase } from "../schemas/fraseSchema";
 import { useFrases } from "../hooks/useFrases";
 
 export function Dashboard({ onLogout }: { onLogout: () => void }) {
