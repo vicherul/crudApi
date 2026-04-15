@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Frase, FraseFormData } from '../../schemas/fraseSchema'; 
+import type { Frase, FraseFormData } from "@/schemas/frase-schema";
+import { API_ENDPOINTS } from "@/constants/api";
 
-const API_URL = 'https://api-frases23032026.vercel.app/api/frases'
+const apiUrl = API_ENDPOINTS.frases;
 
 export function useFrases(){
     const [frases, setFrases] = useState<Frase[]>([])
@@ -10,9 +11,14 @@ export function useFrases(){
     const cargarFrases = useCallback(async () => {
         try{
             setCargando(true)
-            const res = await fetch(API_URL)
+            const res = await fetch(apiUrl)
             const data = await res.json()
-            setFrases(data);
+            setFrases(
+                data.map((frase: Frase) => ({
+                    ...frase,
+                    image: frase.image ?? "",
+                }))
+            );
 
         }finally{
             setCargando(false)
@@ -20,7 +26,7 @@ export function useFrases(){
     },[])
 
     const agregarFrase = async (data:FraseFormData)=>{
-        await fetch(API_URL, {
+        await fetch(apiUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(data),
@@ -29,7 +35,7 @@ export function useFrases(){
     }
 
     const editarFrase = async(id:string, data: FraseFormData) =>{
-        await fetch(`${API_URL}/${id}`,{
+        await fetch(`${apiUrl}/${id}`,{
             method: "PUT",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(data),
@@ -39,7 +45,7 @@ export function useFrases(){
 
     const eliminarFrase = async(id:string) =>{
         if(!window.confirm("¿Seguro que quieres borrar esta frase?")) return;
-        await fetch(`${API_URL}/${id}`, {method: "DELETE"})
+        await fetch(`${apiUrl}/${id}`, {method: "DELETE"})
         await cargarFrases();
     }
 

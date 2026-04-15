@@ -1,44 +1,67 @@
 import { useState } from "react";
+import "@/components/login.css";
+import perroPiss from "@/assets/perro-piss.png";
+import { allowedUsers } from "@/constants/auth";
 
 interface LoginProps {
     onLogin: (username: string) => void;
 }
 
-const USUARIOS_PERMITIDOS = ["admin", "alumno"]; //( Los dos usuarios validos)
-
 const Login = ({onLogin}: LoginProps) => {
-    const [usuario, setUsuario] = useState("");
-    const [error, setError] = useState("")
-
+  const [formState, setFormState] = useState(() => ({
+    usuario: "",
+    error: "",
+    isSubmitting: false,
+  }));
+  const { usuario, error, isSubmitting } = formState;
 
     const handleSubmit = (e: React.FormEvent) =>{
         e.preventDefault();
-        if(USUARIOS_PERMITIDOS.includes(usuario.toLocaleLowerCase())){
-            localStorage.setItem("frases_user", usuario)
+    setFormState((prev) => ({ ...prev, error: "", isSubmitting: true }));
+        
+        if(allowedUsers.includes(usuario.toLocaleLowerCase() as (typeof allowedUsers)[number])){
             onLogin(usuario)
         }else{
-            setError("Usuario no válido !Espabila")
+      setFormState((prev) => ({ ...prev, error: "Usuario no válido", isSubmitting: false }));
         }
     }
 
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center mb-6">Acceso al Sistema</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Introduce tu usuario..."
-            className="border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" className="bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">
-            Entrar
-          </button>
-        </form>
+    <div className="login-footer">
+      <div className="login-container">
+        <img src={perroPiss} alt="perro piss" className="login-bird" />
+        <div className="login-card">
+          <h2>Acceso al Sistema</h2>
+          <form className="login-form" onSubmit={handleSubmit}>
+            <input 
+              type="text" 
+              placeholder="Usuario *" 
+              required
+              value={usuario}
+              onChange={(e) => setFormState((prev) => ({ ...prev, usuario: e.target.value }))}
+              disabled={isSubmitting}
+            />
+            
+            {error && (
+              <div className="error-message">
+                <p>{error}</p>
+              </div>
+            )}
+
+            <div className="form-bottom">
+              <small>* Campos obligatorios</small>
+              <button 
+                type="submit" 
+                className="send-btn"
+                disabled={isSubmitting || !usuario.trim()}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )

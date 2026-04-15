@@ -1,12 +1,21 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fraseSchema, type FraseFormData, type Frase } from "../schemas/fraseSchema";
-import { useFrases } from "../hooks/useFrases";
+import { fraseSchema, type FraseFormData, type Frase } from "@/schemas/frase-schema";
+import { useFrases } from "@/hooks/use-frases";
+import { useFavorites } from "@/hooks/use-favorites";
+import { useEscapeKey } from "@/hooks/use-escape-key";
+import { Footer } from "@/components/footer/footer";
+import relax from "@/assets/relax.jpg";
+import Navbar from "@/components/navbar/navbar";
 
 export function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { frases, cargando, agregarFrase, editarFrase, eliminarFrase } = useFrases();
-  const [idEditando, setIdEditando] = useState<string | null>(null);
+  const [uiState, setUiState] = useState(() => ({
+    editingId: null as string | null,
+    selectedImage: null as string | null,
+  }));
+  const { toggleFavorite, isFavorite } = useFavorites();
   
   // useRef para el auto-scroll
   const formRef = useRef<HTMLElement>(null);
@@ -16,9 +25,9 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
   });
 
   const onSubmit = async (data: FraseFormData) => {
-    if (idEditando) {
-      await editarFrase(idEditando, data);
-      setIdEditando(null);
+    if (uiState.editingId) {
+      await editarFrase(uiState.editingId, data);
+      setUiState((prev) => ({ ...prev, editingId: null }));
     } else {
       await agregarFrase(data);
     }
@@ -26,100 +35,200 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   const prepararEdicion = (frase: Frase) => {
-    setIdEditando(frase._id);
+    setUiState((prev) => ({ ...prev, editingId: frase._id }));
     setValue("text", frase.text);
     setValue("author", frase.author);
+    setValue("image", frase.image ?? "");
     // Hacemos scroll suave hacia el formulario
     formRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const cancelarEdicion = () => {
-    setIdEditando(null);
+    setUiState((prev) => ({ ...prev, editingId: null }));
     reset();
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
-        
-        {/* Navbar */}
-        <header className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
-          <h1 className="text-2xl font-black text-slate-800">📚 Gestor de Frases</h1>
-          <button onClick={onLogout} className="text-red-600 font-bold hover:underline">
-            Cerrar Sesión
-          </button>
-        </header>
+  const closeImageModal = useCallback(() => {
+    setUiState((prev) => ({ ...prev, selectedImage: null }));
+  }, []);
 
-        {/* Tabla de Frases */}
-        <section className="bg-white p-6 rounded-xl shadow-md border">
+  useEscapeKey(closeImageModal);
+
+  return (
+    <div className="min-h-screen bg-[#00969a] p-8">
+      <Navbar onLogout={onLogout} />
+
+      <div className="mx-auto max-w-5xl space-y-8 pt-24">
+        <section id="about" className="rounded-xl bg-white p-6 shadow-md">
+          <h1
+            className="font-['Gorditas'] font-extrabold tracking-wide text-slate-800"
+            style={{ fontSize: "clamp(2.2rem, 6vw, 3rem)" }}
+          >
+            Cabanyal Vibes
+          </h1>
+          <p className="mt-2 text-slate-600">Gestiona frases, imagenes y favoritos desde tu panel.</p>
+        </section>
+
+        {/* Tarjetas de Frases */}
+        <section id="galeria" className="bg-[#c0ea7c] p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-bold mb-4">Lista de Frases</h2>
           {cargando ? <p>Cargando datos...</p> : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-100">
-                  <tr>
-                    <th className="p-3 border-b">Frase</th>
-                    <th className="p-3 border-b">Autor</th>
-                    <th className="p-3 border-b text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {frases.map(frase => (
-                    <tr key={frase._id} className="hover:bg-slate-50">
-                      <td className="p-3 border-b italic">"{frase.text}"</td>
-                      <td className="p-3 border-b font-semibold">{frase.author}</td>
-                      <td className="p-3 border-b text-center space-x-3">
-                        <button onClick={() => prepararEdicion(frase)} title="Editar" className="hover:scale-125 transition">
-                          ✏️
-                        </button>
-                        <button onClick={() => eliminarFrase(frase._id)} title="Eliminar" className="hover:scale-125 transition">
-                          🗑️
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {frases.map(({ _id, image, text, author }) => (
+                <article key={_id} className="rounded-2xl overflow-hidden bg-[#ffffff] shadow-sm">
+                  <div className="group relative h-44 bg-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(_id)}
+                      aria-label="Marcar como favorita"
+                      className="absolute top-3 right-3 z-10 cursor-pointer rounded-full bg-white/90 p-2 shadow hover:scale-110 transition"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-5 h-5" fill={isFavorite(_id) ? "#ef4444" : "none"} stroke={isFavorite(_id) ? "#ef4444" : "#334155"} strokeWidth="2">
+                        <path d="M12 21s-6.7-4.35-9.2-7.66C.65 10.5 1.3 6.9 4.26 5.28 6.57 4 8.96 4.62 10.5 6.33L12 8l1.5-1.67c1.54-1.71 3.93-2.33 6.24-1.05 2.96 1.62 3.61 5.22 1.46 8.06C18.7 16.65 12 21 12 21z" />
+                      </svg>
+                    </button>
+                    {image ? (
+                      <button
+                        type="button"
+                        onClick={() => setUiState((prev) => ({ ...prev, selectedImage: image }))}
+                        className="h-full w-full cursor-pointer"
+                        aria-label={`Ver imagen completa de ${author}`}
+                      >
+                        <img
+                          src={image}
+                          alt={`Imagen de la frase de ${author}`}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </button>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-500 text-sm">
+                        Sin imagen
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4">
+                    <p className="italic text-slate-700 leading-relaxed">"{text}"</p>
+                    <p className="mt-3 font-semibold text-slate-900">{author}</p>
+
+                    <div className="mt-5 flex items-center justify-between gap-3">
+                      <button
+                        onClick={() => prepararEdicion({ _id, image, text, author })}
+                        title="Editar"
+                        className="inline-flex w-[48%] cursor-pointer items-center justify-center gap-1.5 rounded-full bg-slate-300 px-3.5 py-2 text-xs font-bold text-slate-900"
+                      >
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                          <path d="M12 20h9" />
+                          <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                        </svg>
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => eliminarFrase(_id)}
+                        title="Eliminar"
+                        className="inline-flex w-[48%] cursor-pointer items-center justify-center gap-1.5 rounded-full bg-slate-300 px-3.5 py-2 text-xs font-bold text-slate-900"
+                      >
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                          <path d="M3 6h18" />
+                          <path d="M8 6V4h8v2" />
+                          <path d="M19 6l-1 14H6L5 6" />
+                          <path d="M10 11v6M14 11v6" />
+                        </svg>
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>
 
-        {/* Formulario conectado a useRef */}
-        <section ref={formRef} className="bg-slate-800 p-6 rounded-xl shadow-lg text-white">
-          <h2 className="text-xl font-bold mb-4">
-            {idEditando ? "✏️ Editar Frase" : "➕ Nueva Frase"}
-          </h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block mb-1 text-sm text-slate-300">Texto de la frase</label>
-              <input 
-                {...register("text")} 
-                className="w-full p-2 rounded bg-slate-700 border border-slate-600 outline-none focus:ring-2 focus:ring-blue-400" 
-              />
-              {errors.text && <p className="text-red-400 text-sm mt-1">{errors.text.message}</p>}
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm text-slate-300">Autor</label>
-              <input 
-                {...register("author")} 
-                className="w-full p-2 rounded bg-slate-700 border border-slate-600 outline-none focus:ring-2 focus:ring-blue-400" 
-              />
-              {errors.author && <p className="text-red-400 text-sm mt-1">{errors.author.message}</p>}
-            </div>
-
-            <div className="flex gap-4 pt-2">
-              <button type="submit" className="bg-blue-600 px-6 py-2 rounded font-bold hover:bg-blue-500 transition">
-                {idEditando ? "Actualizar" : "Guardar"}
+        {uiState.selectedImage && (
+          <div
+            className="fixed inset-0 z-50 bg-black/70 p-4 flex items-center justify-center"
+            onClick={closeImageModal}
+          >
+            <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                onClick={closeImageModal}
+                className="absolute -top-3 -right-3 h-10 w-10 cursor-pointer rounded-full bg-white font-bold text-slate-800 shadow"
+                aria-label="Cerrar imagen"
+              >
+                x
               </button>
-              {idEditando && (
-                <button type="button" onClick={cancelarEdicion} className="bg-slate-600 px-6 py-2 rounded font-bold hover:bg-slate-500 transition">
-                  Cancelar
-                </button>
-              )}
+              <img
+                src={uiState.selectedImage}
+                alt="Imagen ampliada"
+                className="w-full max-h-[85vh] object-contain rounded-xl bg-white"
+              />
             </div>
-          </form>
+          </div>
+        )}
+
+        {/* Formulario conectado a useRef */}
+        <section id="tu-frase" ref={formRef} className="rounded-xl bg-[#c0ea7c] p-6 shadow-md">
+          <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
+            <div>
+              <h2 className="mb-4 text-xl font-bold text-slate-800">
+                {uiState.editingId ? "✏️ Editar Frase" : "➕ Nueva Frase"}
+              </h2>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <>
+                  <label className="mb-1 block text-sm font-semibold text-slate-700">Texto de la frase</label>
+                  <input 
+                    {...register("text")} 
+                    className="w-full rounded-lg bg-slate-100 p-2.5 text-slate-800 outline-none focus:ring-2 focus:ring-slate-400" 
+                  />
+                  {errors.text && <p className="mt-1 text-sm text-red-600">{errors.text.message}</p>}
+                </>
+
+                <>
+                  <label className="mb-1 block text-sm font-semibold text-slate-700">Autor</label>
+                  <input 
+                    {...register("author")} 
+                    className="w-full rounded-lg bg-slate-100 p-2.5 text-slate-800 outline-none focus:ring-2 focus:ring-slate-400" 
+                  />
+                  {errors.author && <p className="mt-1 text-sm text-red-600">{errors.author.message}</p>}
+                </>
+
+                <>
+                  <label className="mb-1 block text-sm font-semibold text-slate-700">Imagen (URL)</label>
+                  <input
+                    {...register("image")}
+                    placeholder="https://..."
+                    className="w-full rounded-lg bg-slate-100 p-2.5 text-slate-800 outline-none focus:ring-2 focus:ring-slate-400"
+                  />
+                  {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>}
+                </>
+
+                <div className="flex gap-4 pt-2">
+                  <button type="submit" className="cursor-pointer rounded-full bg-slate-300 px-6 py-2 font-bold text-slate-900">
+                    {uiState.editingId ? "Actualizar" : "Guardar"}
+                  </button>
+                  {uiState.editingId && (
+                    <button type="button" onClick={cancelarEdicion} className="cursor-pointer rounded-full bg-slate-300 px-6 py-2 font-bold text-slate-900">
+                      Cancelar
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            <div className="relative overflow-hidden rounded-xl bg-slate-100">
+              <img
+                src={relax}
+                alt="Ilustracion decorativa"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/35 to-transparent" />
+            </div>
+          </div>
         </section>
+
+        <Footer />
 
       </div>
     </div>
