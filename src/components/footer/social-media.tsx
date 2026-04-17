@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import behance from "../../assets/behance.svg";
 import instagram from "../../assets/instagram.svg";
 import linkedin from "../../assets/linkedin.svg";
