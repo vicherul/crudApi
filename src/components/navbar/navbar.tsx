@@ -10,25 +10,19 @@ const Navbar = ({ onLogout }: NavbarProps) => {
         <a
           href="#about"
           title="Acerca"
-          className="rounded-full px-4 py-2 text-base font-semibold text-black transition hover:bg-[#dfbd29] sm:text-lg"
-        >
-          About
-        </a>
-        <a
-          href="#"
-          className="rounded-full px-4 py-2 text-base font-semibold text-black transition hover:bg-[#dfbd29] sm:text-lg"
+          className="rounded-full px-4 py-2 text-[18px] font-['Gorditas'] font-semibold text-black transition hover:bg-[#dfbd29] sm:text-[20px]"
         >
           Inicio
         </a>
         <a
           href="#galeria"
-          className="rounded-full px-4 py-2 text-base font-semibold text-black transition hover:bg-[#dfbd29] sm:text-lg"
+          className="rounded-full px-4 py-2 text-[18px] font-['Gorditas'] font-semibold text-black transition hover:bg-[#dfbd29] sm:text-[20px]"
         >
           Galeria
         </a>
         <a
           href="#tu-frase"
-          className="rounded-full px-4 py-2 text-base font-semibold text-black transition hover:bg-[#dfbd29] sm:text-lg"
+          className="rounded-full px-4 py-2 text-[18px] font-['Gorditas'] font-semibold text-black transition hover:bg-[#dfbd29] sm:text-[20px]"
         >
           Tu frase
         </a>

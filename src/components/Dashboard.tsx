@@ -59,23 +59,23 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
       <Navbar onLogout={onLogout} />
 
       <div className="mx-auto max-w-5xl space-y-8 pt-24">
-        <section id="about" className="rounded-xl bg-white p-6 shadow-md">
+        <section id="about">
           <h1
-            className="font-['Gorditas'] font-extrabold tracking-wide text-slate-800"
-            style={{ fontSize: "clamp(2.2rem, 6vw, 3rem)" }}
+            className="font-['Gorditas'] font-extrabold tracking-wide text-white"
+            style={{ fontSize: "clamp(2.8rem, 6vw, 3.2rem)" }}
           >
             Cabanyal Vibes
           </h1>
-          <p className="mt-2 text-slate-600">Gestiona frases, imagenes y favoritos desde tu panel.</p>
+          <p className="mt-2 text-white/80">Gestiona frases, imagenes y favoritos desde tu panel.</p>
         </section>
 
         {/* Tarjetas de Frases */}
         <section id="galeria" className="bg-[#c0ea7c] p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-bold mb-4">Lista de Frases</h2>
+          <h2 className="text-xl font-['Gorditas'] mb-4">Lista de Frases</h2>
           {cargando ? <p>Cargando datos...</p> : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {frases.map(({ _id, image, text, author }) => (
-                <article key={_id} className="rounded-2xl overflow-hidden bg-[#ffffff] shadow-sm">
+                <article key={_id} className="flex h-full flex-col overflow-hidden rounded-2xl bg-[#ffffff] shadow-sm">
                   <div className="group relative h-44 bg-slate-200">
                     <button
                       type="button"
@@ -108,26 +108,27 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
                     )}
                   </div>
 
-                  <div className="p-4">
+                  <div className="flex flex-1 flex-col p-4">
                     <p className="italic text-slate-700 leading-relaxed">"{text}"</p>
                     <p className="mt-3 font-semibold text-slate-900">{author}</p>
 
-                    <div className="mt-5 flex items-center justify-between gap-3">
+                    <div className="mt-auto flex items-center gap-3 pt-5">
                       <button
                         onClick={() => prepararEdicion({ _id, image, text, author })}
+                        aria-label="Editar frase"
                         title="Editar"
-                        className="inline-flex w-[48%] cursor-pointer items-center justify-center gap-1.5 rounded-full bg-slate-300 px-3.5 py-2 text-xs font-bold text-slate-900"
+                        className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fe5126] text-white shadow-sm transition hover:bg-[#e7471f]"
                       >
                         <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                           <path d="M12 20h9" />
                           <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                         </svg>
-                        Editar
                       </button>
                       <button
                         onClick={() => eliminarFrase(_id)}
+                        aria-label="Eliminar frase"
                         title="Eliminar"
-                        className="inline-flex w-[48%] cursor-pointer items-center justify-center gap-1.5 rounded-full bg-slate-300 px-3.5 py-2 text-xs font-bold text-slate-900"
+                        className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#fe5126] text-white shadow-sm transition hover:bg-[#e7471f]"
                       >
                         <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                           <path d="M3 6h18" />
@@ -135,7 +136,6 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
                           <path d="M19 6l-1 14H6L5 6" />
                           <path d="M10 11v6M14 11v6" />
                         </svg>
-                        Eliminar
                       </button>
                     </div>
                   </div>
@@ -162,18 +162,30 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
               <img
                 src={uiState.selectedImage}
                 alt="Imagen ampliada"
-                className="w-full max-h-[85vh] object-contain rounded-xl bg-white"
+                className="w-full max-h-[85vh] object-contain rounded-xl bg-black/30"
               />
             </div>
           </div>
         )}
 
+        <section>
+          <h2
+            className="font-['Gorditas'] font-extrabold tracking-wide text-white"
+            style={{ fontSize: "clamp(2.8rem, 6vw, 3.2rem)" }}
+          >
+            Tu Frase
+          </h2>
+          <p className="mt-2 text-white/80">
+            Porque el Cabanyal no se lee, se escucha. Comparte tu rincon favorito.
+          </p>
+        </section>
+
         {/* Formulario conectado a useRef */}
         <section id="tu-frase" ref={formRef} className="rounded-xl bg-[#c0ea7c] p-6 shadow-md">
           <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
             <div>
-              <h2 className="mb-4 text-xl font-bold text-slate-800">
-                {uiState.editingId ? "✏️ Editar Frase" : "➕ Nueva Frase"}
+              <h2 className="mb-4 font-['Gorditas'] text-xl font-bold text-slate-800">
+                {uiState.editingId ? "Editar Frase" : "Nueva Frase"}
               </h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <>
