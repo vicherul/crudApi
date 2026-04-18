@@ -186,6 +186,7 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
             <div>
               <h2 className="mb-4 font-['Gorditas'] text-xl font-bold text-slate-800">
                 {uiState.editingId ? "Editar Frase" : "Nueva Frase"}
+                
               </h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <>
