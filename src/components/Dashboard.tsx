@@ -7,6 +7,8 @@ import { useFavorites } from "@/hooks/use-favorites";
 import { useEscapeKey } from "@/hooks/use-escape-key";
 import { Footer } from "@/components/footer/footer";
 import relax from "@/assets/relax.jpg";
+import gato from "@/assets/gato.png";
+import avion from "@/assets/avion.png";
 import Navbar from "@/components/navbar/navbar";
 
 export function Dashboard({ onLogout }: { onLogout: () => void }) {
@@ -176,7 +178,7 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
             Tu Frase
           </h2>
           <p className="mt-2 text-white/80">
-            Porque el Cabanyal no se lee, se escucha. Comparte tu rincon favorito.
+            Porque el Cabanyal no se lee, se escucha. Comparte tu rincón favorito.
           </p>
         </section>
 
@@ -218,14 +220,32 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
                 </>
 
                 <div className="flex gap-4 pt-2">
-                  <button type="submit" className="cursor-pointer rounded-full bg-slate-300 px-6 py-2 font-bold text-slate-900">
-                    {uiState.editingId ? "Actualizar" : "Guardar"}
-                  </button>
+                  {uiState.editingId ? (
+                    <button type="submit" className="cursor-pointer rounded-full bg-slate-300 px-6 py-2 font-bold text-slate-900">
+                      Actualizar
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      aria-label="Guardar"
+                      title="Guardar"
+                      className="inline-flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[#fe5126] shadow-sm transition hover:scale-105 hover:bg-[#e7471f]"
+                    >
+                      <img src={avion} alt="Guardar" className="h-8 w-8 object-contain" />
+                    </button>
+                  )}
                   {uiState.editingId && (
                     <button type="button" onClick={cancelarEdicion} className="cursor-pointer rounded-full bg-slate-300 px-6 py-2 font-bold text-slate-900">
                       Cancelar
                     </button>
                   )}
+                </div>
+                <div className="mt-4 flex justify-center">
+                  <img
+                    src={gato}
+                    alt="Gato decorativo"
+                    className="block w-36 select-none"
+                  />
                 </div>
               </form>
             </div>
