@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { Dashboard } from "@/components/dashboard";
+import { Dashboard } from "@/components/Dashboard";
 import { useAuth } from "@/context/auth-context";
 import { APP_ROUTES } from "@/constants/routes";
 
