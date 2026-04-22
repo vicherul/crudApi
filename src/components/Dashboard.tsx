@@ -12,20 +12,21 @@ import avion from "@/assets/avion.png";
 import Navbar from "@/components/navbar/navbar";
 
 export function Dashboard({ onLogout }: { onLogout: () => void }) {
+  // Estado y acciones CRUD centralizadas en hooks para simplificar la vista.
   const { frases, cargando, agregarFrase, editarFrase, eliminarFrase } = useFrases();
   const [uiState, setUiState] = useState(() => ({
     editingId: null as string | null,
     selectedImage: null as string | null,
   }));
   const { toggleFavorite, isFavorite } = useFavorites();
-  
-  // useRef para el auto-scroll
+
   const formRef = useRef<HTMLElement>(null);
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FraseFormData>({
     resolver: zodResolver(fraseSchema),
   });
 
+  // Reutiliza el mismo submit para crear o editar segun exista editingId.
   const onSubmit = async (data: FraseFormData) => {
     if (uiState.editingId) {
       await editarFrase(uiState.editingId, data);
@@ -36,12 +37,12 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
     reset();
   };
 
+  // Precarga el formulario con la frase elegida y desplaza la vista al editor.
   const prepararEdicion = (frase: Frase) => {
     setUiState((prev) => ({ ...prev, editingId: frase._id }));
     setValue("text", frase.text);
     setValue("author", frase.author);
     setValue("image", frase.image ?? "");
-    // Hacemos scroll suave hacia el formulario
     formRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -50,6 +51,7 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
     reset();
   };
 
+  // Se usa para cerrar el modal al hacer clic fuera o pulsar Escape.
   const closeImageModal = useCallback(() => {
     setUiState((prev) => ({ ...prev, selectedImage: null }));
   }, []);
@@ -57,6 +59,7 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
   useEscapeKey(closeImageModal);
 
   return (
+    // Dashboard principal: galeria de frases, formulario y footer.
     <div className="min-h-screen bg-[#00969a] p-8">
       <Navbar onLogout={onLogout} />
 
@@ -71,7 +74,6 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
           <p className="mt-2 text-white/80">Gestiona frases, imagenes y favoritos desde tu panel.</p>
         </section>
 
-        {/* Tarjetas de Frases */}
         <section id="galeria" className="bg-[#c0ea7c] p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-['Gorditas'] mb-4">Lista de Frases</h2>
           {cargando ? <p>Cargando datos...</p> : (
@@ -182,7 +184,6 @@ export function Dashboard({ onLogout }: { onLogout: () => void }) {
           </p>
         </section>
 
-        {/* Formulario conectado a useRef */}
         <section id="tu-frase" ref={formRef} className="rounded-xl bg-[#c0ea7c] p-6 shadow-md">
           <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
             <div>

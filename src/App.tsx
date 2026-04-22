@@ -2,12 +2,15 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { APP_ROUTES } from "@/constants/routes";
 
+// Las vistas se cargan bajo demanda para reducir el peso inicial del bundle.
 const LoginPage = lazy(() => import("@/pages/login-page"));
 const DashboardPage = lazy(() => import("@/pages/dashboard-page"));
 
 function App() {
   return (
+    // Suspense muestra un estado de carga mientras se resuelven las paginas diferidas.
     <Suspense fallback={<p className="p-6 text-center text-slate-700">Cargando vista...</p>}>
+      {/* Definicion central de rutas publicas y protegidas de la aplicacion. */}
       <Routes>
         <Route path={APP_ROUTES.home} element={<Navigate to={APP_ROUTES.login} replace />} />
         <Route path={APP_ROUTES.login} element={<LoginPage />} />

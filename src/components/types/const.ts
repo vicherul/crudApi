@@ -1,10 +1,13 @@
+// Texto de cinta decorativa mostrado en la interfaz principal.
 export const ribbonText =
   "BIENVENIDOS · CABANYAL FEST · MUSICA · CERVEZA · COMIDA · BUEN AMBIENTE · MAS CERVEZA";
+// Clases reutilizables para inputs y enlaces sociales, centralizadas para evitar duplicacion.
 export const fieldClassName =
   "rounded-md border-none bg-[#ffe9cc] px-4 py-3 text-sm text-[#333] outline-none focus:outline-2 focus:outline-[#2f2f2f]";
 export const socialLinkClassName =
   "flex h-10 w-10 items-center justify-center rounded-full bg-[#004d40] transition hover:scale-110 hover:bg-[#00695c]";
 
+// URLs externas del portfolio y redes del proyecto.
 export const URLS = {
   Behance: "https://www.behance.net/victorhernandezu",
   Instagram: "https://www.instagram.com/victorious.es/",

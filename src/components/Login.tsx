@@ -6,8 +6,10 @@ import { type AllowedUser, userCredentials } from "@/constants/auth";
 interface LoginProps {
     onLogin: (username: string) => void;
 }
-// Componente de Login contraseña en asteriscos, validación de usuario, mensaje de error y botón de envío con SVG.
+
+// Pantalla de acceso con validacion local de credenciales.
 const Login = ({onLogin}: LoginProps) => {
+  // Estado unico para controlar campos, error y envio del formulario.
   const [formState, setFormState] = useState(() => ({
     usuario: "",
     password: "",
@@ -16,6 +18,7 @@ const Login = ({onLogin}: LoginProps) => {
   }));
   const { usuario, password, error, isSubmitting } = formState;
 
+    // Normaliza y valida contra el diccionario local antes de autenticar.
     const handleSubmit = (e: React.FormEvent) =>{
         e.preventDefault();
     setFormState((prev) => ({ ...prev, error: "", isSubmitting: true }));
@@ -35,6 +38,7 @@ const Login = ({onLogin}: LoginProps) => {
     }
 
   return (
+    // Estructura visual del login: tarjeta, campos y accion principal.
     <div className="login-footer">
       <div className="login-container">
         <img src={perroPiss} alt="perro piss" className="login-bird" />

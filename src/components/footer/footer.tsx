@@ -1,9 +1,11 @@
 import SocialMedia from "../footer/social-media";
 
 export function Footer() {
+  // Se calcula en runtime para no actualizarlo manualmente cada ano.
   const currentYear = new Date().getFullYear();
 
   return (
+    // Pie de pagina con descripcion del proyecto y redes sociales.
     <footer className="mt-10 overflow-hidden rounded-3xl bg-emerald-400/95 shadow-lg">
       <div className="relative px-6 py-6 md:px-10 md:py-7">
         <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
