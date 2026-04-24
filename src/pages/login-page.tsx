@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Login from "@/components/login";
+import Login from "@/components/Login";
 import { useAuth } from "@/context/auth-context";
 import { APP_ROUTES } from "@/constants/routes";
 
