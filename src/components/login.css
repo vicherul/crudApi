@@ -146,7 +146,6 @@
   height: 1.375rem;
 }
 
-/* Media Queries */
 @media (max-width: 640px) {
   .login-card {
     width: calc(100% - 2rem);

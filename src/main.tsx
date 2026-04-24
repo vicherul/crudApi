@@ -5,6 +5,7 @@ import '@/index.css'
 import App from '@/app'
 import { AuthProvider } from '@/context/auth-context'
 
+// Punto de entrada de la aplicacion: monta React, activa el router y expone el contexto de autenticacion.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>

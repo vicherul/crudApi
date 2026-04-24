@@ -4,6 +4,7 @@ import linkedin from "../../assets/linkedin.svg";
 import { socialLinkClassName, URLS } from "../types/const";
 
 
+// Bloque de enlaces externos de redes en formato icono.
 const SocialMedia = () => {
   return (
     <>

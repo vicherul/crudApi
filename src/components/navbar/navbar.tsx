@@ -5,6 +5,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ onLogout }: NavbarProps) => {
+  // Controla la apertura del menu en mobile.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleToggleMenu = () => {
@@ -16,6 +17,7 @@ const Navbar = ({ onLogout }: NavbarProps) => {
   };
 
   return (
+    // Navegacion fija con anclas internas y accion de logout.
     <header className="fixed left-0 top-0 z-50 w-full border border-white/40 bg-white/45 px-4 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[5px] sm:px-8 lg:px-12">
       <nav className="mx-auto w-full max-w-7xl">
         <div className="flex items-center justify-between gap-3">
