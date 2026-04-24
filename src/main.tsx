@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import '@/index.css'
-import App from '@/app'
+import App from '@/App'
 import { AuthProvider } from '@/context/auth-context'
 
 // Punto de entrada de la aplicacion: monta React, activa el router y expone el contexto de autenticacion.
