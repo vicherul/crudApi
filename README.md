@@ -21,6 +21,9 @@ The result is a fully responsive platform that delivers a smooth and cohesive Us
 
 
 <img width="5000" height="3400" alt="Web" src="https://github.com/user-attachments/assets/9ae6b24a-9659-4c6c-bd8e-6728f729cf4d" />
+<img width="5000" height="3400" alt="paginas_6" src="https://github.com/user-attachments/assets/5e4021de-2731-4b60-87ce-35e7a36b9546" />
+
+
 <img width="5000" height="3400" alt="paginas_2" src="https://github.com/user-attachments/assets/edcdd7de-ee24-4632-86d0-455b06eb5884" />
 
 
